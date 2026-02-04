@@ -333,54 +333,5 @@
         </section>
     </main>
 
-    <script>
-        (() => {
-            const header = document.querySelector('.site-header');
-            const container = document.querySelector('.stories-stack');
-            const cards = container ? Array.from(container.querySelectorAll('.story')) : [];
-
-            const stickyTop = 108;
-            const bringForwardThreshold = 140;
-            const compactNavScrollY = 24;
-            let ticking = false;
-
-            const update = () => {
-                ticking = false;
-
-                if (header) {
-                    header.classList.toggle('is-compact', window.scrollY > compactNavScrollY);
-                }
-
-                if (!cards.length) return;
-
-                // Bring the next (lower) card forward once it gets close enough.
-                // This makes the below card appear on top of the above card while scrolling.
-                let frontIndex = -1;
-                for (let i = 0; i < cards.length; i++) {
-                    const rect = cards[i].getBoundingClientRect();
-                    if (rect.top <= stickyTop + bringForwardThreshold) frontIndex = i;
-                }
-
-                cards.forEach((card, i) => {
-                    card.classList.toggle('stack-front', i === frontIndex);
-                    if (i === frontIndex) {
-                        card.style.setProperty('--z', String(80 + i));
-                    } else {
-                        card.style.removeProperty('--z');
-                    }
-                });
-            };
-
-            const onScroll = () => {
-                if (ticking) return;
-                ticking = true;
-                requestAnimationFrame(update);
-            };
-
-            window.addEventListener('scroll', onScroll, { passive: true });
-            window.addEventListener('resize', onScroll);
-            update();
-        })();
-    </script>
 </body>
 </html>
